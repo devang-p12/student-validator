@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Validator</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h2>🎓 Student Validator Tool</h2>
+    <input type="text" id="search" placeholder="Enter student name">
+    <button onclick="searchStudent()">Search</button>
+    <div id="results"></div>
+
+    <script>
+        function searchStudent() {
+            const name = document.getElementById("search").value;
+            fetch(`/search?name=${encodeURIComponent(name)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById("results");
+                    container.innerHTML = '';
+                    if (data.length === 0) {
+                        container.innerHTML = '<p>No student found.</p>';
+                    } else {
+                        data.forEach(s => {
+                            container.innerHTML += `
+                                <div class="card">
+                                    <b>Name:</b> ${s.name}<br>
+                                    <b>Merit No:</b> ${s.merit_no}<br>
+                                    <b>Score:</b> ${s.score}<br>
+                                    <b>Category:</b> ${s.category}<br>
+                                    <b>Seat Type:</b> ${s.seat}<br>
+                                    ${s.warning ? `<p style="color:red">${s.warning}</p>` : ''}
+                                </div>
+                                <hr>
+                            `;
+                        });
+                    }
+                });
+        }
+    </script>
+</body>
+</html>
